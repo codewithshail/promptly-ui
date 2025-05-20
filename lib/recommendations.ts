@@ -14,6 +14,7 @@ import { eq, and, desc, sql } from 'drizzle-orm';
  * The algorithm uses a scoring system to rank tools and returns
  * the top N recommendations.
  */
+
 export async function getRecommendedTools(userId: string, limit: number = 6) {
   // Step 1: Get user's reference category
   const user = await db.query.users.findFirst({
