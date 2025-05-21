@@ -10,9 +10,9 @@ import { PrimarySidebar } from '@/components/layout/sidebar/primary-sidebar'
 
 const referenceOptions = [
   {
-    id: 'marketing',
-    name: 'Marketing',
-    description: 'Content creation, social media, and advertising tools',
+    id: 'design',
+    name: 'Design',
+    description: 'Tools for graphic design, UI/UX, and creative projects',
     icon: '📣'
   },
   {
@@ -40,34 +40,48 @@ const referenceOptions = [
     icon: '💰'
   },
   {
-    id: 'sales',
-    name: 'Sales',
-    description: 'Lead generation, CRM, and sales enablement',
+    id: 'marketing',
+    name: 'Marketing',
+    description: 'Lead generation, CRM, and marketing automation',
     icon: '🤝'
   },
   {
-    id: 'social-media',
+    id: 'social',
     name: 'Social Media',
     description: 'Content creation, scheduling, and analytics',
     icon: '📱'
   },
   {
-    id: 'other',
-    name: 'Other',
+    id: 'general',
+    name: 'General',
     description: 'General purpose AI tools for various needs',
     icon: '🔍'
+  },
+  {
+    id: 'writing',
+    name: 'Writing',
+    description: 'Content generation, editing, and proofreading tools',
+    icon: '✍️'
   }
 ]
 
 export default function ReferenceSelectionPage() {
-  const [selectedReference, setSelectedReference] = useState<string | null>(null)
+  const [selectedReferences, setSelectedReferences] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const router = useRouter()
   const { user, isLoaded } = useUser()
   
+  const toggleReference = (name: string) => {
+    setSelectedReferences(prev =>
+      prev.includes(name)
+        ? prev.filter(ref => ref !== name)
+        : [...prev, name]
+    )
+  }
+
   const handleSubmit = async () => {
-    if (!selectedReference) return
-    
+    if (selectedReferences.length === 0) return
+
     setIsSubmitting(true)
     
     try {
@@ -78,7 +92,7 @@ export default function ReferenceSelectionPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          reference: selectedReference,
+          reference: selectedReferences,
         }),
       })
       
@@ -120,9 +134,9 @@ export default function ReferenceSelectionPage() {
                 {referenceOptions.map(option => (
                   <Button
                     key={option.id}
-                    variant={selectedReference === option.name ? "default" : "outline"}
+                    variant={selectedReferences.includes(option.name) ? "default" : "outline"}
                     className="h-auto p-4 justify-start text-left flex items-start gap-3"
-                    onClick={() => setSelectedReference(option.name)}
+                    onClick={() => toggleReference(option.name)}
                   >
                     <span className="text-2xl">{option.icon}</span>
                     <div>
@@ -139,7 +153,7 @@ export default function ReferenceSelectionPage() {
                 <Button 
                   size="lg" 
                   onClick={handleSubmit}
-                  disabled={!selectedReference || isSubmitting}
+                  disabled={selectedReferences.length === 0 || isSubmitting}
                 >
                   {isSubmitting ? (
                     <>

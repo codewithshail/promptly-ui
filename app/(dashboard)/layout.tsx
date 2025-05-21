@@ -35,7 +35,7 @@ export default async function MainLayout({
       firstName: clerkUser.firstName || "",
       lastName: clerkUser.lastName || "",
       profileImage: clerkUser.imageUrl || "",
-      reference: 'other', // or null if your schema allows
+      reference: "", // or null if your schema allows
       creditCoins: 100,
       createdAt: new Date(),
       updatedAt: new Date(),

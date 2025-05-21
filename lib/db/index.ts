@@ -6,6 +6,7 @@ import * as usersSchema from './schema/users';
 import * as toolsSchema from './schema/tools';
 import * as categoriesSchema from './schema/categories';
 import * as toolCategoriesSchema from './schema/tool-categories';
+import * as migrationsSchema from './schema/migrate-tools';
 import * as bookmarksSchema from './schema/bookmarks';
 import * as usageSchema from './schema/usage';
 import * as customRequestsSchema from './schema/custom-requests';
@@ -18,7 +19,8 @@ const schema = {
   ...toolCategoriesSchema,
   ...bookmarksSchema,
   ...usageSchema,
-  ...customRequestsSchema
+  ...customRequestsSchema,
+  ...migrationsSchema
 };
 
 
@@ -34,3 +36,4 @@ export * from './schema/tool-categories';
 export * from './schema/bookmarks';
 export * from './schema/usage';
 export * from './schema/custom-requests';
+export * from './schema/migrate-tools';

@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server'
-import { Search } from 'lucide-react'
+import { Search, Crown } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -55,13 +55,35 @@ export default async function Dashboard() {
   
   return (
     <div className="container mx-auto py-6 space-y-8">
-      <div className="flex items-center space-x-4">
-        <div className="relative flex-1 max-w-xl">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input 
-            placeholder="Search for AI tools..." 
-            className="pl-10"
-          />
+      {/* Header Section with Gradient Background */}
+      <div className="relative bg-gradient-to-r from-cyan-500 to-purple-900 text-white py-8 rounded-lg mb-8">
+        {/* Upgrade your plan button in top right */}
+        <div className="absolute top-4 right-4">
+          <Button 
+            className="bg-black text-white-400 border border-purple-400 hover:bg-gray-900 transition-colors"
+            asChild
+          >
+            <a href="/upgrade">
+              <Crown color='gold'/>
+              <span>Upgrade to Promptly</span>
+            </a>
+          </Button>
+        </div>
+
+        {/* Main header content */}
+        <div className="text-center">
+          <h1 className="text-4xl mt-10 font-bold mb-4">What will you Prompt today?</h1>
+          <div className="flex justify-center space-x-4 mb-6">
+          </div>
+          <div className="relative flex justify-center">
+            <div className="relative w-full max-w-xl">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-100 h-4 w-4" />
+              <Input 
+                placeholder="Search tools as you type..." 
+                className="pl-10 bg-gray-800 text-white border-gray-600 focus:border-white placeholder:text-gray-100"
+              />
+            </div>
+          </div>
         </div>
       </div>
       

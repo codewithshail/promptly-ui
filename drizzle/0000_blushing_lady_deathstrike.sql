@@ -55,16 +55,15 @@ CREATE TABLE "usage_logs" (
 --> statement-breakpoint
 CREATE TABLE "users" (
 	"id" text PRIMARY KEY NOT NULL,
-	"email" text NOT NULL,
-	"first_name" text,
-	"last_name" text,
-	"username" text NOT NULL,
+	"email" varchar(255) NOT NULL,
+	"username" varchar(255),
+	"first_name" varchar(255),
+	"last_name" varchar(255),
 	"profile_image" text,
-	"reference" text NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "users_email_unique" UNIQUE("email"),
-	CONSTRAINT "users_username_unique" UNIQUE("username")
+	"reference" varchar(255),
+	"credit_coins" integer DEFAULT 100,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 ALTER TABLE "bookmarks" ADD CONSTRAINT "bookmarks_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
