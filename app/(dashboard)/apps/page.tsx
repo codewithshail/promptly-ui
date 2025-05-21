@@ -1,15 +1,47 @@
-import { Suspense } from 'react';
+"use client";
+
+import { useState } from "react";
+import Image from "next/image";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { PrimarySidebar } from '@/components/layout/sidebar/primary-sidebar';
-import { ContextualSidebar } from '@/components/layout/sidebar/contextual-sidebar';
-import { CategoryCarousel } from '@/components/layout/navigation/category-carousel';
-import { ToolGrid } from '@/components/tools/tool-grid';
-import { ToolCard } from '@/components/tools/tool-card';
-import { FeatureBanner } from '@/components/layout/feature-banner/page';
+
+type Tool = {
+  id: string;
+  name: string;
+  description: string;
+  subtitle?: string;
+  logo: string;
+  preview: string;
+  generationType: string;
+  isNew: boolean;
+  categories: string[];
+};
+
+type Category = {
+  id: string;
+  name: string;
+  icon: string;
+  tools?: {
+    id: string;
+    name: string;
+    href: string;
+  }[];
+};
+
+type FeatureBanner = {
+  id: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  image: string;
+  bgColor: string;
+};
 
 // Comprehensive category data with tools
-const categories = [
+const categories: Category[] = [
   {
     id: '1',
     name: 'For You',
@@ -209,7 +241,7 @@ const categories = [
 ];
 
 // Tool data with category associations
-const toolsData = [
+const toolsData: Tool[] = [
   // Text Generation Tools
   {
     id: '201',
@@ -217,6 +249,7 @@ const toolsData = [
     description: 'Generate engaging blog posts on any topic',
     subtitle: 'AI-powered blog content creator',
     logo: '/images/tools/blog-writer.png',
+    preview: '/images/previews/blog-writer.png',
     generationType: 'Text',
     isNew: false,
     categories: ['2']
@@ -227,6 +260,7 @@ const toolsData = [
     description: 'Create professional emails for any business scenario',
     subtitle: 'Professional email generator',
     logo: '/images/tools/email-composer.png',
+    preview: '/images/previews/email-composer.png',
     generationType: 'Text',
     isNew: false,
     categories: ['2']
@@ -237,6 +271,7 @@ const toolsData = [
     description: 'Create engaging posts for all social platforms',
     subtitle: 'Platform-specific content creator',
     logo: '/images/tools/social-post.png',
+    preview: '/images/previews/social-post.png',
     generationType: 'Text',
     isNew: true,
     categories: ['2']
@@ -247,6 +282,7 @@ const toolsData = [
     description: 'Generate compelling product descriptions that sell',
     subtitle: 'E-commerce copy generator',
     logo: '/images/tools/product-desc.png',
+    preview: '/images/previews/product-desc.png',
     generationType: 'Text',
     isNew: false,
     categories: ['2']
@@ -257,6 +293,7 @@ const toolsData = [
     description: 'Create professional resumes tailored to job descriptions',
     subtitle: 'Career document generator',
     logo: '/images/tools/resume-builder.png',
+    preview: '/images/previews/resume-builder.png',
     generationType: 'Text',
     isNew: false,
     categories: ['2']
@@ -269,6 +306,7 @@ const toolsData = [
     description: 'Create realistic portraits of people who don\'t exist',
     subtitle: 'AI portrait creator',
     logo: '/images/tools/portrait-gen.png',
+    preview: '/images/previews/portrait-gen.png',
     generationType: 'Image',
     isNew: false,
     categories: ['3']
@@ -279,6 +317,7 @@ const toolsData = [
     description: 'Generate unique logos for your brand or business',
     subtitle: 'Brand identity generator',
     logo: '/images/tools/logo-creator.png',
+    preview: '/images/previews/logo-creator.png',
     generationType: 'Image',
     isNew: true,
     categories: ['3']
@@ -289,6 +328,7 @@ const toolsData = [
     description: 'Automatically remove backgrounds from any image',
     subtitle: 'Image background eraser',
     logo: '/images/tools/bg-remover.png',
+    preview: '/images/previews/bg-remover.png',
     generationType: 'Image',
     isNew: false,
     categories: ['3']
@@ -299,6 +339,7 @@ const toolsData = [
     description: 'Enhance low-resolution images to high quality',
     subtitle: 'Resolution enhancer',
     logo: '/images/tools/upscaler.png',
+    preview: '/images/previews/upscaler.png',
     generationType: 'Image',
     isNew: false,
     categories: ['3']
@@ -311,6 +352,7 @@ const toolsData = [
     description: 'Create a digital copy of your voice or custom voices',
     subtitle: 'Personal voice replication',
     logo: '/images/tools/voice-clone.png',
+    preview: '/images/previews/voice-clone.png',
     generationType: 'Audio',
     isNew: true,
     categories: ['4']
@@ -321,6 +363,7 @@ const toolsData = [
     description: 'Convert audio to text with high accuracy',
     subtitle: 'Speech-to-text converter',
     logo: '/images/tools/transcription.png',
+    preview: '/images/previews/transcription.png',
     generationType: 'Audio',
     isNew: false,
     categories: ['4']
@@ -331,6 +374,7 @@ const toolsData = [
     description: 'Create podcast episodes from text scripts',
     subtitle: 'Text-to-podcast converter',
     logo: '/images/tools/podcast-gen.png',
+    preview: '/images/previews/podcast-gen.png',
     generationType: 'Audio',
     isNew: true,
     categories: ['4']
@@ -341,6 +385,7 @@ const toolsData = [
     description: 'Generate original music in various styles',
     subtitle: 'AI music creation',
     logo: '/images/tools/music-composer.png',
+    preview: '/images/previews/music-composer.png',
     generationType: 'Audio',
     isNew: false,
     categories: ['4']
@@ -348,7 +393,7 @@ const toolsData = [
 ];
 
 // Feature banners
-const featureBanners = [
+const featureBanners: FeatureBanner[] = [
   {
     id: '1',
     title: 'Voice Cloning Technology',
@@ -378,97 +423,269 @@ const featureBanners = [
   }
 ];
 
-export default async function AppsPage({
-  searchParams,
-}: {
-  searchParams?: { [key: string]: string | string[] | undefined };
-}) {
-  // In Next.js App Router, searchParams is already resolved, no need to await it
-  // But we should ensure we're handling it properly
-  
-  // Get search params with proper type checking
-  const params = searchParams || {};
-  const categoryParam = typeof params.category === 'string' ? params.category : undefined;
-  const searchParam = typeof params.search === 'string' ? params.search : undefined;
-  
-  // Filter tools based on search params
-  let filteredTools = [...toolsData];
-  
-  if (categoryParam) {
-    // Find the category by name
-    const selectedCategory = categories.find(c => 
-      c.name.toLowerCase() === categoryParam.toLowerCase()
-    );
-    
-    if (selectedCategory) {
-      // Filter tools by category ID
-      filteredTools = filteredTools.filter(tool => 
-        tool.categories?.includes(selectedCategory.id)
+export default function SearchPage() {
+  const [activeCategory, setActiveCategory] = useState('For You');
+  const [selectedTool, setSelectedTool] = useState<Tool | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [visibleCounts, setVisibleCounts] = useState<Record<string, number>>({});
+
+  const settings = {
+    dots: true,
+    arrows: false,
+    infinite: true,
+    autoplay: true,
+    speed: 600,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
+  // Filter tools based on active category and search query
+  const filteredTools = toolsData.filter(
+    (tool) => {
+      const categoryMatch = categories.find(cat => 
+        cat.name === activeCategory && tool.categories.includes(cat.id)
       );
+      
+      const searchMatch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (tool.subtitle && tool.subtitle.toLowerCase().includes(searchQuery.toLowerCase()));
+      
+      return categoryMatch && searchMatch;
     }
-  }
-  
-  if (searchParam) {
-    const searchTerm = searchParam.toLowerCase();
-    filteredTools = filteredTools.filter(tool => 
-      tool.name.toLowerCase().includes(searchTerm) || 
-      tool.description.toLowerCase().includes(searchTerm) ||
-      (tool.subtitle && tool.subtitle.toLowerCase().includes(searchTerm))
-    );
-  }
-  
-  // Format categories for the carousel
-  const carouselCategories = categories.map(category => ({
-    id: category.id,
-    name: category.name,
-    icon: category.icon
-  }));
+  );
+
+  // Group tools by generation type (subcategory)
+  const groupedTools: Record<string, Tool[]> = {};
+  filteredTools.forEach((tool) => {
+    const subcategory = tool.generationType;
+    if (!groupedTools[subcategory]) groupedTools[subcategory] = [];
+    groupedTools[subcategory].push(tool);
+  });
+
+  const handleSeeMore = (sub: string) => {
+    setVisibleCounts((prev) => ({
+      ...prev,
+      [sub]: (prev[sub] || 8) + 8,
+    }));
+  };
+
+  const handleCollapse = (sub: string) => {
+    setVisibleCounts((prev) => ({
+      ...prev,
+      [sub]: 8,
+    }));
+  };
 
   return (
-    <div className="flex h-screen">
-      <ContextualSidebar 
-        type="apps"
-        categories={categories}
-      />
-      <main className="flex-1 overflow-auto">
-        <div className="container mx-auto py-6 space-y-6">
-          {/* Feature Banner */}
-          <FeatureBanner features={featureBanners} />
-          
-          <div className="flex flex-col md:flex-row md:items-center gap-4">
-            <div className="relative flex-1 max-w-xl">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <form action="/apps" method="GET">
-                <Input 
-                  name="search"
-                  placeholder="Search for AI tools..." 
-                  className="pl-10"
-                  defaultValue={searchParam || ''}
-                />
-              </form>
-            </div>
-            
-            <CategoryCarousel categories={carouselCategories} />
-          </div>
-          
-          <Suspense fallback={<div>Loading tools...</div>}>
-            <ToolGrid>
-              {filteredTools.map(tool => (
-                <ToolCard key={tool.id} tool={tool} />
-              ))}
-            </ToolGrid>
-            
-            {filteredTools.length === 0 && (
-              <div className="text-center py-12">
-                <h3 className="text-lg font-medium mb-2">No tools found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search or category filter
-                </p>
+    <div className="font-sans">
+      {/* Banner */}
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <Slider {...settings}>
+          {featureBanners.map((slide, idx) => (
+            <div key={idx}>
+              <div className={`${slide.bgColor} rounded-xl p-6 md:flex md:items-center md:justify-between`}>
+                <div className="md:w-1/2 space-y-3">
+                  <span className="bg-gray-700 text-white text-xs font-semibold px-2 py-1 rounded-md">
+                    Featured
+                  </span>
+                  <h2 className="text-2xl md:text-3xl font-semibold text-gray-900">
+                    {slide.title}
+                  </h2>
+                  <p className="text-gray-700">{slide.description}</p>
+                  <button 
+                    className="mt-4 bg-[#9333EA] text-white px-4 py-2 rounded-md shadow-md hover:bg-[#7e22ce] transition"
+                    onClick={() => window.location.href = slide.buttonLink}
+                  >
+                    {slide.buttonText}
+                  </button>
+                </div>
+                <div className="md:w-1/2 mt-6 md:mt-0 flex justify-end">
+                  <div className="relative w-[200px] h-[200px] rounded-lg overflow-hidden shadow-lg">
+                    <Image
+                      src={slide.image}
+                      alt="Slide image"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
               </div>
-            )}
-          </Suspense>
+            </div>
+          ))}
+        </Slider>
+      </div>
+
+      {/* Search + Tools */}
+      <div className="px-6 py-6 max-w-7xl mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+          <div className="relative flex-1 max-w-xl">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search for AI tools..."
+              className="w-full pl-10 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          </div>
+          <div className="flex overflow-x-auto space-x-2 scrollbar-hide">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.name)}
+                className={`whitespace-nowrap px-4 py-2 rounded-full border text-sm font-medium ${
+                  activeCategory === cat.name
+                    ? "bg-purple-100 text-purple-800 border-purple-300"
+                    : "bg-white text-gray-700 border-gray-300"
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
         </div>
-      </main>
+
+        <div className="mt-6 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-900">
+            {activeCategory}
+          </h2>
+          <p className="text-sm text-gray-600">
+            Explore top AI tools under &quot;{activeCategory}&quot;
+          </p>
+        </div>
+
+        {Object.entries(groupedTools).map(([sub, list]) => {
+          const visibleCount = visibleCounts[sub] || 8;
+          return (
+            <div key={sub} className="mb-10">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">{sub}</h3>
+                <div className="flex items-center space-x-2">
+                  {list.length > visibleCount && (
+                    <button
+                      onClick={() => handleSeeMore(sub)}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      See all
+                    </button>
+                  )}
+                  {visibleCount > 8 && (
+                    <button
+                      onClick={() => handleCollapse(sub)}
+                      className="text-gray-500 hover:text-gray-700"
+                      title="Collapse"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-5 h-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 15l7-7 7 7"
+                        />
+                      </svg>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
+                {list.slice(0, visibleCount).map((tool) => (
+                  <div
+                    key={tool.id}
+                    className="flex items-start gap-4 p-3 rounded-lg hover:bg-gray-50 transition cursor-pointer"
+                    onClick={() => setSelectedTool(tool)}
+                  >
+                    <div className="min-w-[48px] min-h-[48px] relative rounded overflow-hidden">
+                      <Image
+                        src={tool.logo}
+                        alt={tool.name}
+                        width={48}
+                        height={48}
+                        className="object-contain rounded"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-sm font-semibold text-gray-900 leading-tight">
+                        {tool.name}
+                        {tool.isNew && (
+                          <span className="ml-2 bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                            New
+                          </span>
+                        )}
+                      </h4>
+                      <p className="text-sm text-gray-600 leading-snug">
+                        {tool.subtitle || tool.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {selectedTool && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full flex flex-col md:flex-row overflow-hidden relative">
+            <div className="md:w-1/2 bg-[#E0F3FF] flex items-center justify-center p-6">
+              <Image
+                src={selectedTool.preview}
+                alt={`Preview of ${selectedTool.name}`}
+                width={300}
+                height={300}
+                className="rounded-xl object-cover"
+              />
+            </div>
+            <div className="md:w-1/2 p-6 space-y-4 relative">
+              <button
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-xl"
+                onClick={() => setSelectedTool(null)}
+              >
+                ✕
+              </button>
+              <h3 className="text-xl font-bold text-gray-900">
+                {selectedTool.name}
+                {selectedTool.isNew && (
+                  <span className="ml-2 bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">
+                    New
+                  </span>
+                )}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {selectedTool.description}
+              </p>
+              <div className="mt-4 space-y-2">
+                <h4 className="text-sm font-semibold text-gray-800">
+                  Features & Access
+                </h4>
+                <ul className="text-sm text-gray-600 list-disc list-inside">
+                  <li>Use directly in our AI workspace</li>
+                  <li>Secure, real-time AI integration</li>
+                  <li>No setup or configuration required</li>
+                  <li>{selectedTool.generationType} generation capabilities</li>
+                </ul>
+              </div>
+              <div className="pt-4">
+                <button
+                  className="bg-purple-600 text-white px-5 py-2 rounded-md hover:bg-purple-700 transition"
+                  onClick={() =>
+                    alert(`Launching ${selectedTool.name}...`)
+                  }
+                >
+                  Use Tool
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
