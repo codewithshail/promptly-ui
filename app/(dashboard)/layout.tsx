@@ -24,22 +24,9 @@ export default async function MainLayout({
   if (!user) {
     const clerkUser = await currentUser();
     if (!clerkUser) {
-      redirect("/sign-in?redirect_url=/dashboard");
+      redirect('/sign-in')
       return null;
     }
-
-    await db.insert(users).values({
-      id: userId,
-      email: clerkUser.emailAddresses[0]?.emailAddress || "",
-      username: clerkUser.username || `user_${userId.substring(0, 8)}`,
-      firstName: clerkUser.firstName || "",
-      lastName: clerkUser.lastName || "",
-      profileImage: clerkUser.imageUrl || "",
-      reference: "", // or null if your schema allows
-      creditCoins: 100,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
   }
 
   return (
