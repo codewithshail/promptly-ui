@@ -37,11 +37,13 @@ export default async function DashboardLayout({
   const recommendedTools = await getRecommendedTools(userId, 5)
   
   // Map to the format expected by ContextualSidebar
-  const recommendedToolsFormatted = recommendedTools.map(tool => ({
-    id: tool.id,
-    name: tool.name,
-    href: `/apps/${tool.id}`
-  }))
+  const recommendedToolsFormatted = recommendedTools.flatMap(category =>
+    category.tools.map(tool => ({
+      id: tool.id,
+      name: tool.name,
+      href: `/apps/${tool.id}`
+    }))
+  )
   
   return (
     <div className="flex h-screen">

@@ -12,11 +12,17 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
-export default async function BookmarksPage({
-  searchParams,
-}: {
-  searchParams: { category?: string; search?: string }
+export default async function BookmarksPage(props: {
+  searchParams?: { category?: string; search?: string } | Promise<{ category?: string; search?: string }>;
 }) {
+  // Await searchParams if it's a Promise (Next.js 14+ dynamic API)
+  const resolvedSearchParams = props.searchParams
+    ? await Promise.resolve(props.searchParams)
+    : {};
+
+  // Use resolvedSearchParams instead of searchParams
+  const category = resolvedSearchParams.category;
+  const search = resolvedSearchParams.search;
   const { userId } = await auth()
   
   if (!userId) {
@@ -66,28 +72,25 @@ export default async function BookmarksPage({
   const formattedCategories = Array.from(bookmarkedCategories.values())
   
   // Determine which tools to show based on search params
-  let tools = bookmarks.map(b => b.tool)
-  
-  if (searchParams.category) {
-    // Filter tools by category
+  let tools = bookmarks.map(b => b.tool);
+
+  if (category) {
     tools = bookmarks
-      .filter(bookmark => 
-        bookmark.tool.categories.some(tc => 
-          tc.category.name.toLowerCase() === searchParams.category?.toLowerCase()
+      .filter(bookmark =>
+        bookmark.tool.categories.some(tc =>
+          tc.category.name.toLowerCase() === category.toLowerCase()
         )
       )
-      .map(b => b.tool)
-  } else if (searchParams.search) {
-    // Search within bookmarked tools
-    const searchTerm = searchParams.search.toLowerCase()
-    
+      .map(b => b.tool);
+  } else if (search) {
+    const searchTerm = search.toLowerCase();
     tools = bookmarks
-      .filter(bookmark => 
-        bookmark.tool.name.toLowerCase().includes(searchTerm) || 
+      .filter(bookmark =>
+        bookmark.tool.name.toLowerCase().includes(searchTerm) ||
         bookmark.tool.description.toLowerCase().includes(searchTerm) ||
         (bookmark.tool.subtitle && bookmark.tool.subtitle.toLowerCase().includes(searchTerm))
       )
-      .map(b => b.tool)
+      .map(b => b.tool);
   }
   
   return (
@@ -104,7 +107,7 @@ export default async function BookmarksPage({
               <Input 
                 placeholder="Search in bookmarks..." 
                 className="pl-10"
-                defaultValue={searchParams.search || ''}
+                defaultValue={resolvedSearchParams.search || ''}
               />
             </div>
             
@@ -126,7 +129,7 @@ export default async function BookmarksPage({
               <Card>
                 <CardContent className="p-6 text-center">
                   <p className="text-muted-foreground mb-4">
-                    {searchParams.category || searchParams.search
+                    {resolvedSearchParams.category || resolvedSearchParams.search
                       ? "No bookmarks found matching your criteria"
                       : "You haven't bookmarked any tools yet"}
                   </p>

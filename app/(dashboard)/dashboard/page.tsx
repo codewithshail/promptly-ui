@@ -94,11 +94,32 @@ export default async function Dashboard() {
             <a href="/apps">See all</a>
           </Button>
         </div>
-        <ToolGrid>
-          {recommendedTools.map(tool => (
-            <ToolCard key={tool.id} tool={tool} />
-          ))}
-        </ToolGrid>
+        {recommendedTools.length === 0 ? (
+          <Card>
+            <CardContent className="p-6 text-center">
+              <p className="text-muted-foreground mb-4">
+                No recommendations yet. Select your interests in the reference form!
+              </p>
+              <Button asChild>
+                <a href="/reference-form">Choose Interests</a>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          recommendedTools.map(({ category, tools }) => (
+            <div key={category.id} className="mb-8">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xl">{category.icon}</span>
+                <span className="font-semibold">{category.name}</span>
+              </div>
+              <ToolGrid>
+                {tools.map(t => (
+                  <ToolCard key={t.id} tool={t} />
+                ))}
+              </ToolGrid>
+            </div>
+          ))
+        )}
       </section>
       
       <section>

@@ -6,60 +6,60 @@ import { useUser } from '@clerk/nextjs'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Loader2 } from 'lucide-react'
-import { PrimarySidebar } from '@/components/layout/sidebar/primary-sidebar'
+// import { PrimarySidebar } from '@/components/layout/sidebar/primary-sidebar'
 
 const referenceOptions = [
   {
     id: 'design',
-    name: 'Design',
+    name: 'Designer Tools',
     description: 'Tools for graphic design, UI/UX, and creative projects',
     icon: '📣'
   },
   {
     id: 'education',
-    name: 'Education',
+    name: 'Education Tools',
     description: 'Learning, teaching, and educational content tools',
     icon: '🎓'
   },
   {
     id: 'healthcare',
-    name: 'Healthcare',
+    name: 'HealthCare Tools',
     description: 'Medical research, patient care, and health management',
     icon: '🏥'
   },
   {
     id: 'legal',
-    name: 'Legal',
+    name: 'Legal Tools',
     description: 'Legal research, document analysis, and compliance',
     icon: '⚖️'
   },
   {
     id: 'fintech',
-    name: 'Fintech',
+    name: 'Fintech Tools',
     description: 'Financial analysis, investment, and banking tools',
     icon: '💰'
   },
   {
     id: 'marketing',
-    name: 'Marketing',
+    name: 'Marketing Tools',
     description: 'Lead generation, CRM, and marketing automation',
     icon: '🤝'
   },
   {
     id: 'social',
-    name: 'Social Media',
+    name: 'Social Media Tools',
     description: 'Content creation, scheduling, and analytics',
     icon: '📱'
   },
   {
     id: 'general',
-    name: 'General',
+    name: 'General - For All',
     description: 'General purpose AI tools for various needs',
     icon: '🔍'
   },
   {
     id: 'writing',
-    name: 'Writing',
+    name: 'Writing Tools',
     description: 'Content generation, editing, and proofreading tools',
     icon: '✍️'
   }
@@ -119,7 +119,7 @@ export default function ReferenceSelectionPage() {
   
   return (
     <div className="flex min-h-screen">
-      <PrimarySidebar />
+      {/* <PrimarySidebar /> */}
       <main className="flex-1 flex items-center justify-center p-6">
         <div className="max-w-3xl w-full">
           <Card>
