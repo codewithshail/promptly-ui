@@ -87,42 +87,8 @@ export default async function Dashboard() {
         <div className="flex flex-col mb-4">
           <h2 className="text-2xl font-bold mb-6">What's New</h2>
           <div className="w-full">
-            <WhatsNew />
+            <WhatsNew cardsData={newTools} />
           </div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {newTools.map((tool) => (
-            <Card key={tool.id} className="overflow-hidden">
-              <CardHeader className="p-4">
-                <CardTitle className="text-lg">{tool.name}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                  {tool.subtitle || tool.description}
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="aspect-video bg-muted relative">
-                  {tool.screenshots && tool.screenshots.length > 0 ? (
-                    <img
-                      src={tool.screenshots[0] || "/placeholder.svg"}
-                      alt={tool.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-muted-foreground">No preview</span>
-                    </div>
-                  )}
-                  <Button
-                    className="absolute bottom-4 right-4"
-                    size="sm"
-                    asChild
-                  >
-                    <a href={`/apps/${tool.id}`}>Use Tool</a>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </section>
 

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "motion/react";
 import { ImageProps } from "next/image";
 import { useOutsideClick } from "@/hooks/use-outside-click";
+import { Button } from "@/components/ui/button";
 
 interface CarouselProps {
   items: JSX.Element[];
@@ -11,10 +12,17 @@ interface CarouselProps {
 }
 
 type Card = {
-  src: string;
-  title: string;
-  category: string;
-  content: React.ReactNode;
+  id: string;
+  name: string;
+  description: string;
+  subtitle: string | null;
+  logo: string;
+  screenshots: string[] | null;
+  priceInfo: string | null;
+  generationType: string;
+  isNew: boolean | null;
+  createdAt: string | Date;
+  updatedAt: string | Date;
 };
 
 export const CarouselContext = createContext<{
@@ -124,7 +132,6 @@ export const Card = ({
 }) => {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -168,42 +175,61 @@ export const Card = ({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               ref={containerRef}
-              layoutId={layout ? `card-${card.title}` : undefined}
+              layoutId={layout ? `card-${card.name}` : undefined}
               className="relative z-[60] mx-auto my-50 h-fit max-w-5xl rounded-3xl p-4 font-sans md:p-10 bg-[#F5F5F7] dark:bg-neutral-800"
             >
-              <div className="flex gap-2">
+              <div className="flex gap-4">
                 <div className="w-full h-full rounded-2xl">
                   <img
-                    src="https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=3556&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    alt="Macbook mockup from Aceternity UI"
+                    src={card.logo}
+                    alt="Tool Images"
                     height="500"
                     width="500"
-                    className="h-full w-full mx-auto object-contain rounded-3xl"
+                    className="h-full w-full mx-auto object-contain rounded-2xl bg-amber-700"
                   />
                 </div>
-                <div className="py-3">{card.content}</div>
+                <div className="flex flex-col gap-4">
+                  <div className="flex gap-2">
+                    <img
+                      src={card.logo}
+                      alt="Tool Logo"
+                      height="100"
+                      width="100"
+                      className="object-contain rounded-2xl bg-amber-200"
+                    />
+                    <div className="flex flex-col">
+                      <div>{card.name}</div>
+                      <div>{card.subtitle}</div>
+                    </div>
+                  </div>
+                  <div>{card.description}</div>
+                  <div>$ {card.priceInfo}</div>
+                  <Button className="bottom-4 right-4" size="sm" asChild>
+                    <a href={`/apps/${card.id}`}>Use Tool</a>
+                  </Button>
+                </div>
               </div>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
       <motion.button
-        layoutId={layout ? `card-${card.title}` : undefined}
+        layoutId={layout ? `card-${card.name}` : undefined}
         onClick={handleOpen}
         className="relative z-10 flex h-50 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[15rem] md:w-96 dark:bg-neutral-900"
       >
         <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
         <div className="relative z-40 p-8">
           <motion.p
-            layoutId={layout ? `title-${card.title}` : undefined}
+            layoutId={layout ? `title-${card.name}` : undefined}
             className="mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl"
           >
-            {card.title}
+            {card.name}
           </motion.p>
         </div>
         <BlurImage
-          src={card.src}
-          alt={card.title}
+          src={card.logo}
+          alt={card.name}
           fill
           className="absolute inset-0 z-10 object-cover"
         />
